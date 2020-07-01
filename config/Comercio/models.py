@@ -47,7 +47,7 @@ class Venta(models.Model):
         return self.descuento
     
     isDescuento.boolean = True
-    isDescuento.short_descripcion = 'Descuento'
+    isDescuento.short_description = 'Descuento'
 
     def __str__(self):
         return str('Venta al Cliente: {}'.format(self.cliente.nombre))
