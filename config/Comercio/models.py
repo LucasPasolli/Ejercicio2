@@ -10,12 +10,6 @@ class Categoria(models.Model):
     def __str__(self):
         return '{}'.format(self.nombre)
 
-class Detalle(models.Model):
-    cantidad = models.IntegerField()
-
-    def __str__(self):
-        return '{}'.format(self.cantidad)
-
 class Producto(models.Model):
     id = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=20)
@@ -40,14 +34,23 @@ class Venta(models.Model, Producto, Detalle):
     def __str__(self):
         return str(self.nombre)
 
-class Direccion(models.Model):
-    calle = models.CharField(max_length=20)
-    numero = models.IntegerField()
-    ciudad = models.CharField(max_length=40)
-    comuna = models.CharField(max_length=40)
-
+class Ciudad(models.Model):
+    nombre = models.CharField(max_length = 20)
     def __str__(self):
-        return '{}'.format(self.calle)
+        return str(self.nombre)
+
+class Comuna(models.Model):
+    nombre = models.CharField(max_length = 20)
+    ciudad = models.ForeignKey('Ciudad', on_delete=models.CASCADE, null=False)
+    def __str__(self):
+        return str(self.nombre)
+
+class Direccion(models.Model): 
+    numero = models.CharField(max_length = 5)
+    calle = models.CharField(max_length = 20) 
+    comuna = models.ForeignKey('Comuna', on_delete=models.CASCADE, null=False)
+    def __str__(self):
+        return str("{}, {}".format(self.calle,self.numero))
 
 
 class Cliente(models.Model):
@@ -68,3 +71,13 @@ class Proveedor(models.Model):
     def __str__(self):
         return '{}'.format(self.nombre)
 
+class Detalle(models.Model):
+    producto = models.ForeignKey('Producto', on_delete=models.CASCADE, null=False)
+    cantidad = models.SmallIntegerField()
+    venta = models.ForeignKey(
+        'Venta',
+        on_delete=models.CASCADE,
+        null=False
+    )
+    def __str__(self):
+        return str("({}) {} a {}".format(self.cantidad,self.producto.nombre,self.venta.cliente.nombre))
